@@ -143,7 +143,7 @@ GetSecs;
 
 %Get keyboard information
 escapeKey = KbName('Q');
-leftKey   = KbName('X');
+leftKey   = KbName('Z');
 rightKey  = KbName('M');
 
 % Initialise response matrix
