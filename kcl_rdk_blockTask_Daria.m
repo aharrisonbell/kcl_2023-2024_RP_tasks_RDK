@@ -91,7 +91,7 @@ ITI = Shuffle(ITIs);% shuffle ITIs
 
 global RT %#ok<*GVMIS>
 global response
-global run
+% global run
 global tarresp
 global feedback
 feedback = 0;
