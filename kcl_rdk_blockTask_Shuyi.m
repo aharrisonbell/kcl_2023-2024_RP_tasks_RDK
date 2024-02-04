@@ -121,7 +121,10 @@ end
 % Specifies condition file and load conditions
 % NOTE: this selects a given conditions file depending on whether the
 % participant number is EVEN or ODD
-if iseven(participantNumber)
+
+%out = mod(participantNumber,2) == 0
+
+if mod(participantNumber,2) == 0
     conditionsFile = textread('kcl_rdk_skuyi_cueResponse.txt'); %#ok<*DTXTRD>
 else
     conditionsFile = textread('kcl_rdk_skuyi_cueDirection.txt'); %#ok<*DTXTRD>
