@@ -1,6 +1,7 @@
 %% kcl_rdkBlockTask_Daria_practice.m
 % based on MainTask.m provided by Paul Muhle-Karbe <p.muhle-karbe@bham.ac.uk>
 % edited by AHB, Jan 2024
+% v.1.3 Feb 6, 2024
 % Uses Psychtoolbox V3
 % This task includes 144 trials in each of four blocks
 % Each trial begins with a central fixation point followed by a RDK (with
@@ -85,14 +86,14 @@ display.skipChecks = 1; % avoid Screen's timing checks and verbosity
 % RCat = 0; % Response category, will be updated later
 
 %% TASK PARAMETERS
-total_trials_block = 144;
+total_trials_block = 24; % changed for practice
 total_number_of_blocks = 1;
-ITIs = [ones(total_trials_block/4,1)*.5;ones(total_trials_block/4,1)*.75;ones(total_trials_block/4,1)*1;ones(total_trials_block/4,1)*1.25];% create vector for ITIs
+ITIs = [ones(total_trials_block,1)*.5;ones(total_trials_block,1)*.75;ones(total_trials_block,1)*1;ones(total_trials_block,1)*1.25];% create vector for ITIs
 ITI = Shuffle(ITIs);% shuffle ITIs
 
 global RT %#ok<*GVMIS>
 global response
-global run
+% global run
 global tarresp
 global feedback
 feedback = 0;
@@ -105,7 +106,7 @@ colours  = [red; orange; blue; green];
 %% Prompt screen to enter ppt info to be written in logfile name
 question = {'Participant Number:'; 'Block Number'};
 title = 'Experiment Setup';
-NumOfLines = [1 50; 1 50];
+NumOfLines = [1 75; 1 75];
 prompt= inputdlg(question,title,NumOfLines);
 participantNumber  = str2double(prompt(1));
 startingBlock = str2double(prompt(2));
@@ -145,49 +146,41 @@ center  = display.resolution/2;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Intro Screen - display once
-%Screen(display.windowPtr,'DrawText','Hello!.' ,center(1),center(2) + 10,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','Thank you for taking part in our study.' ,center(1),center(2)-340,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','In this task, you will see clouds of moving coloured dots.' ,center(1),center(2)-320,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','Although it might seem like they are moving in random directions, a variable percentage of them.' ,center(1),center(2)-300,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','will be moving in a coherent direction: either to the upper left, the upper right, the lower left, or the lower right.' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','will be moving in a coherent direction: either to the upper left, the upper right, the lower left, or the lower right.' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','Your job will be to indicate which direction you think the dots are moving in.' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','If you think the dots are moving to the UPPER RIGHT or the LOWER RIGHT - press "m".' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','If you think the dots are moving to the UPPER LEFT or the LOWER LEFT - press "x".' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','Please try to respond as quickly as you can.' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','You will receive feedback on your choice.' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','Please try to respond as quickly as you can.' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','If you have any questions, please ask the researcher now.' ,center(1),center(2)-280,[255,255,255]);
-%Screen(display.windowPtr,'DrawText','Otherwise, press any key to continue...' ,center(1),center(2)-260,[255,255,255]);
-%Screen('Flip',display.windowPtr);
 %KbWait();
 
 %% NOTE: this doesn't include a practice set. That will be run in a separate experiment file.
 
-totalTrialExperiment = 0;
+totalTrialExperiment = 0; % initialise trial counter
 
 for currBlock = startingBlock:total_number_of_blocks % allows for manually starting at any block
     if currBlock == 1 % display instructions for block 1
         %Screen(display.windowPtr,'DrawText','BLOCK 1' ,center(1),center(2) - 10,[255,255,255]);
-        instructionimg = imread('kcl_rdk_PromptScreens_block1.jpg');
+        instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
         texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
-        rect = [50 -250 1600 1250];
+        % rect = [50 -250 1600 1250];
         Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
         KbWait();
     elseif currBlock == 2 % display instructions for block 2
-        Screen(display.windowPtr,'DrawText','BLOCK2 ' ,center(1),center(2) - 10,[255,255,255]);
-        Screen(display.windowPtr,'DrawText','Press any key to continue...' ,center(1),center(2)-260,[255,255,255]);
+        instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
+        texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
+        % rect = [50 -250 1600 1250];
+        Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
         KbWait();
     elseif currBlock == 3 % display instructions for block 3
-        Screen(display.windowPtr,'DrawText','BLOCK 3' ,center(1),center(2) - 10,[255,255,255]);
-        Screen(display.windowPtr,'DrawText','Press any key to continue...' ,center(1),center(2)-260,[255,255,255]);
+        instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
+        texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
+        % rect = [50 -250 1600 1250];
+        Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
         KbWait();
     else % display instructions for block 4
-        Screen(display.windowPtr,'DrawText','BLOCK 4' ,center(1),center(2) - 10,[255,255,255]);
-        Screen(display.windowPtr,'DrawText','Press any key to continue...' ,center(1),center(2)-260,[255,255,255]);
+        instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
+        texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
+        % rect = [50 -250 1600 1250];
+        Screen('DrawTexture', display.windowPtr, texI) %, rect);
+        Screen('Flip',display.windowPtr);
         KbWait();
     end
 
@@ -195,7 +188,7 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
     for j = 0:breaktime
         pause(1);
         count = breaktime - j;
-        Screen(display.windowPtr,'DrawText',['Next block starts in ', num2str(count)] ,center(1),center(2),[255,255,255]);
+        Screen(display.windowPtr,'DrawText',['Next block starts in ', num2str(count)] ,center(1) - 150,center(2),[255,255,255]);
         Screen('Flip',display.windowPtr);
         Screen('CloseScreen');
 
@@ -218,15 +211,12 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
     bl_requiredResponse    = blockConditions(:,7); % 1 = leftKey, 2 = rightKey
 
     for ttb = 1:total_trials_block % counter for trials per block
-
         totalTrialExperiment = totalTrialExperiment + 1;
 
         % break every "ntrialsBetweenBreaks" trials
         if  ttb > 1 && rem(ttb, ntrialsBetweenBreaks) == 1
-            A = respMat(ttb-ntrialsBetweenBreaks:ttb,13);
-            A = length(A(A==1))/length(A(A<99));
-            Screen(display.windowPtr,'DrawText',['Time for a break. Your accuracy in the last block was  ',num2str(A*100),'%.'] ,center(1) -250,center(2),[255,255,255]);
-            Screen(display.windowPtr,'DrawText','Press any key to continue.' ,center(1) -100,center(2)+100,[255,255,255]);
+            Screen(display.windowPtr,'DrawText','Time for a break.', center(1)-150, center(2), [255,255,255]);
+            Screen(display.windowPtr,'DrawText','Press any key to continue.', center(1)-150, center(2)+100, [255,255,255]);
             Screen('Flip',display.windowPtr);
             KbWait();
         end
@@ -300,21 +290,31 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
         respMat(totalTrialExperiment,15) = ITI(ttb); % intertrial interval
     end % trials/block
 end % block
-
+% Save respMat output in logfile (add time and date to avoid overwriting)
+dlmwrite(['PRACTICE_kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS AM'), '.txt'],respMat,'delimiter','\t') %#ok<*TNOW1,*DATST,*DLMWT>
+save(['PRACTICE kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS AM'), '.mat'],'respMat')
 
 %% Finish slide at the end of the whole run
-A = respMat(ttb-runlen+1:ttb,13);
-A = length(A(A==1))/length(A(A<99));
-Screen(display.windowPtr,'DrawText',['Well done, you have completed the experiment. Your accuracy in the last block was ',num2str(A*100),'%.'] ,center(1) -550,center(2),[255,255,255]);
-Screen(display.windowPtr,'DrawText','[Press any key to exit.]' ,center(1) -150,center(2)+200,[255,255,255]);
+instructionimg = imread('kcl_rdk_Daria_PromptScreens_practiceEnd.jpg');
+texI = Screen('MakeTexture', display.windowPtr, instructionimg);
+rect = [50 -250 1600 1250];
+Screen('DrawTexture', display.windowPtr, texI) %, rect);
 Screen('Flip',display.windowPtr);
-
+KbWait();
 pause(0.1);
-
 
 Screen('CloseAll');
 ListenChar(1);
-% Save respMat output in logfile (add time and date to avoid overwriting)
-Output_name = sprintf('kcl_rdk_daria_ppt_%s.txt',num2str(participantNumber),num2str(run),datestr(now,'mmmm dd, yyyy HH:MM:SS.FFF AM')); %#ok<*TNOW1,*DATST>
-dlmwrite(Output_name,respMat(1:i-1,:),'delimiter','\t');
-dlmwrite(['PRACTICE_kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS-FFF AM'), '.txt'],respMat,'delimiter','\t') %#ok<*DLMWT>
+
+return
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% To manually save the data, highlight the following text and right-click -> "evaluate current selection in command window"
+saveAfterCrash_Daria; %#ok<*UNRCH>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% If you can't use the keyboard (it appears "locked"), highlight the following text, right-click -> "evaluate current selection in command window"
+ListenChar(1);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
