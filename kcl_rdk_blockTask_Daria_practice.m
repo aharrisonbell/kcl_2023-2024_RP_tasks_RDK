@@ -1,7 +1,9 @@
 %% kcl_rdkBlockTask_Daria_practice.m
+clearvars;
 % based on MainTask.m provided by Paul Muhle-Karbe <p.muhle-karbe@bham.ac.uk>
 % edited by AHB, Jan 2024
-% v.1.3 Feb 6, 2024
+% v.1.2 Feb 6, 2024
+task_version = 1.4; % Version 1.4 - Feb 16, 2024 (post dress rehearsal. post tweaking)
 % Uses Psychtoolbox V3
 % This task includes 144 trials in each of four blocks
 % Each trial begins with a central fixation point followed by a RDK (with
@@ -26,7 +28,7 @@
 %clear dots
 sca;
 close all;
-clearvars;
+
 
 %screenResX = 2560; % 3840;
 %screenResY = 1440; % 2160;
@@ -93,7 +95,7 @@ ITI = Shuffle(ITIs);% shuffle ITIs
 
 global RT %#ok<*GVMIS>
 global response
-% global run
+global run
 global tarresp
 global feedback
 feedback = 0;
@@ -106,7 +108,7 @@ colours  = [red; orange; blue; green];
 %% Prompt screen to enter ppt info to be written in logfile name
 question = {'Participant Number:'; 'Block Number'};
 title = 'Experiment Setup';
-NumOfLines = [1 75; 1 75];
+NumOfLines = [1 50; 1 50];
 prompt= inputdlg(question,title,NumOfLines);
 participantNumber  = str2double(prompt(1));
 startingBlock = str2double(prompt(2));
@@ -150,38 +152,31 @@ center  = display.resolution/2;
 
 %% NOTE: this doesn't include a practice set. That will be run in a separate experiment file.
 
-totalTrialExperiment = 0; % initialise trial counter
+totalTrialExperiment = 0;
 
 for currBlock = startingBlock:total_number_of_blocks % allows for manually starting at any block
     if currBlock == 1 % display instructions for block 1
         %Screen(display.windowPtr,'DrawText','BLOCK 1' ,center(1),center(2) - 10,[255,255,255]);
         instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
         texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
-        % rect = [50 -250 1600 1250];
+        rect = [50 -250 1600 1250];
         Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
-        KbWait();
+        KbStrokeWait; % KbWait();
     elseif currBlock == 2 % display instructions for block 2
-        instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
-        texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
-        % rect = [50 -250 1600 1250];
-        Screen('DrawTexture', display.windowPtr, texI) %, rect);
+        Screen(display.windowPtr,'DrawText','BLOCK2 ' ,center(1),center(2) - 10,[255,255,255]);
+        Screen(display.windowPtr,'DrawText','Press any key to continue...' ,center(1),center(2)-260,[255,255,255]);
         Screen('Flip',display.windowPtr);
-        KbWait();
+        KbStrokeWait; % KbWait();
     elseif currBlock == 3 % display instructions for block 3
-        instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
-        texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
-        % rect = [50 -250 1600 1250];
-        Screen('DrawTexture', display.windowPtr, texI) %, rect);
+        Screen(display.windowPtr,'DrawText','BLOCK 3' ,center(1),center(2) - 10,[255,255,255]);
+        Screen(display.windowPtr,'DrawText','Press any key to continue...' ,center(1),center(2)-260,[255,255,255]);
         Screen('Flip',display.windowPtr);
-        KbWait();
+        KbStrokeWait; % KbWait();
     else % display instructions for block 4
-        instructionimg = imread('kcl_rdk_Daria_PromptScreens_practice.jpg');
-        texI = Screen('MakeTexture', display.windowPtr, instructionimg); 
-        % rect = [50 -250 1600 1250];
-        Screen('DrawTexture', display.windowPtr, texI) %, rect);
-        Screen('Flip',display.windowPtr);
-        KbWait();
+        Screen(display.windowPtr,'DrawText','BLOCK 4' ,center(1),center(2) - 10,[255,255,255]);
+        Screen(display.windowPtr,'DrawText','Press any key to continue...' ,center(1),center(2)-260,[255,255,255]);
+        KbStrokeWait; % KbWait();
     end
 
     %% Waiting period until next block starts (defined as "breaktime" in seconds)
@@ -211,14 +206,15 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
     bl_requiredResponse    = blockConditions(:,7); % 1 = leftKey, 2 = rightKey
 
     for ttb = 1:total_trials_block % counter for trials per block
+
         totalTrialExperiment = totalTrialExperiment + 1;
 
         % break every "ntrialsBetweenBreaks" trials
         if  ttb > 1 && rem(ttb, ntrialsBetweenBreaks) == 1
-            Screen(display.windowPtr,'DrawText','Time for a break.', center(1)-150, center(2), [255,255,255]);
-            Screen(display.windowPtr,'DrawText','Press any key to continue.', center(1)-150, center(2)+100, [255,255,255]);
+            Screen(display.windowPtr,'DrawText',['Time for a break.'] ,center(1) -150,center(2),[255,255,255]);
+            Screen(display.windowPtr,'DrawText','Press any key to continue.' ,center(1) -150,center(2)+100,[255,255,255]);
             Screen('Flip',display.windowPtr);
-            KbWait();
+            KbStrokeWait; % KbWait();
         end
 
         % Cue to determine whether a response has been made
@@ -288,11 +284,13 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
         respMat(totalTrialExperiment,13)  = RCat; % outcome category
         respMat(totalTrialExperiment,14) = RT; % response time
         respMat(totalTrialExperiment,15) = ITI(ttb); % intertrial interval
+        respMat(totalTrialExperiment,16) = task_version;
     end % trials/block
+
 end % block
 % Save respMat output in logfile (add time and date to avoid overwriting)
-dlmwrite(['PRACTICE_kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS AM'), '.txt'],respMat,'delimiter','\t') %#ok<*TNOW1,*DATST,*DLMWT>
-save(['PRACTICE kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS AM'), '.mat'],'respMat')
+dlmwrite(['PRACTICE_kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS-FFF AM'), '.txt'],respMat,'delimiter','\t') %#ok<*DLMWT>
+save(['PRACTICE_kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS-FFF AM'), '.mat'],'respMat')
 
 %% Finish slide at the end of the whole run
 instructionimg = imread('kcl_rdk_Daria_PromptScreens_practiceEnd.jpg');
@@ -300,21 +298,16 @@ texI = Screen('MakeTexture', display.windowPtr, instructionimg);
 rect = [50 -250 1600 1250];
 Screen('DrawTexture', display.windowPtr, texI) %, rect);
 Screen('Flip',display.windowPtr);
-KbWait();
+KbStrokeWait; % KbWait();
 pause(0.1);
 
+
 Screen('CloseAll');
-ListenChar(1);
-
-return
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% To manually save the data, highlight the following text and right-click -> "evaluate current selection in command window"
-saveAfterCrash_Daria; %#ok<*UNRCH>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ListenChar(0);
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% If you can't use the keyboard (it appears "locked"), highlight the following text, right-click -> "evaluate current selection in command window"
-ListenChar(1);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% To manually save the data, highlight the following text and right-click -> "evaluate current selection in command window"
+%saveAfterCrash_Daria;
+
+%% If you can't use the keyboard (it appears "locked"), highlight the following text, right-click -> "evaluate current selection in command window"
+%ListenChar(0)

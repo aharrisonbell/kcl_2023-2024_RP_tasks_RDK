@@ -1,7 +1,9 @@
 %% kcl_rdkBlockTask_Daria.m
+clearvars;
 % based on MainTask.m provided by Paul Muhle-Karbe <p.muhle-karbe@bham.ac.uk>
 % edited by AHB, Jan 2024
 % v.1.3 Feb 6, 2024
+task_version = 1.4; % Version 1.4 - Feb 16, 2024 (post dress rehearsal. post tweaking)
 % Uses Psychtoolbox V3
 % This task includes 144 trials in each of four blocks
 % Each trial begins with a central fixation point followed by a RDK (with
@@ -25,7 +27,8 @@
 %clear dots
 sca;
 close all;
-clearvars;
+
+DisableKeysForKbCheck(179); % 13 might be necessary qfor testing purposes
 
 %screenResX = 2560; % 3840;
 %screenResY = 1440; % 2160;
@@ -287,7 +290,9 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
         respMat(totalTrialExperiment,13) = RCat; % outcome category
         respMat(totalTrialExperiment,14) = RT; % response time
         respMat(totalTrialExperiment,15) = ITI(ttb); % intertrial interval
+        respMat(totalTrialExperiment,16) = task_version;
     end % trials/block
+    saveAfterCrash_Daria; % save progress
 end % block
 % Save respMat output in logfile (add time and date to avoid overwriting)
 dlmwrite(['kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS AM'), '.txt'],respMat,'delimiter','\t') %#ok<*TNOW1,*DATST,*DLMWT>
@@ -295,15 +300,15 @@ save(['kcl_rdk_daria_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-
 
 %% Finish slide at the end of the whole run
 debriefimg = imread('kcl_rdk_Daria_PromptScreens_debrief.jpg');
-texI = Screen('MakeTexture', display.windowPtr, instructionimg);
+texI = Screen('MakeTexture', display.windowPtr, debriefimg);
 rect = [50 -250 1600 1250];
 Screen('DrawTexture', display.windowPtr, texI) %, rect);
 Screen('Flip',display.windowPtr);
-KbWait();
+KbStrokeWait; % KbWait();
 pause(0.1);
 
 Screen('CloseAll');
-ListenChar(1);
+ListenChar(0);
 
 return
 
@@ -313,12 +318,12 @@ return
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % To manually save the data, highlight the following text and right-click -> "evaluate current selection in command window"
-saveAfterCrash_Daria; %#ok<*UNRCH>
+%saveAfterCrash_Daria; %#ok<*UNRCH>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If you can't use the keyboard (it appears "locked"), highlight the following text, right-click -> "evaluate current selection in command window"
-ListenChar(1);
+%ListenChar(1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

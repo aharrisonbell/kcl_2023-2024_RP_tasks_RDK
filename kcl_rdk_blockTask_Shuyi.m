@@ -1,7 +1,9 @@
 %% kcl_rdkBlockTask_Shuyi.m
+clearvars;
 % based on MainTask.m provided by Paul Muhle-Karbe <p.muhle-karbe@bham.ac.uk>
 % edited by AHB, Jan 2024
 % v.1.2 Feb 6, 2024
+task_version = 1.4; % Version 1.4 - Feb 16, 2024 (post dress rehearsal. post tweaking)
 % Uses Psychtoolbox V3
 % This task includes 144 trials in each of four blocks
 % Each trial begins with a central fixation point followed by a RDK (with
@@ -24,7 +26,7 @@
 %clear dots
 sca;
 close all;
-clearvars;
+
 
 %screenResX = 2560; % 3840;
 %screenResY = 1440; % 2160;
@@ -35,7 +37,7 @@ clearvars;
 coherenceLevels = [1 0.05; 2 0.10; 3 0.20; 4 0.30; 5 0.40; 6 0.50]; % this converts the digit in the input textfile to a % coherence level (0.05 = 5%)
 % colours
 red    = [255 0   0  ]; 
-blue   = [100 175 255]; %#ok<*NASGU> % light blue
+blue   = [100 175 255]; % light blue
 green  = [0   255 0  ];
 magenta= [255 0   255];
 cyan   = [0   255 255];
@@ -97,7 +99,7 @@ ITI = Shuffle(ITIs);% shuffle ITIs
 
 global RT %#ok<*GVMIS>
 global response
-% global run
+%global run
 global tarresp
 global feedback
 feedback = 0;
@@ -126,9 +128,9 @@ end
 %out = mod(participantNumber,2) == 0
 
 if mod(participantNumber,2) == 0
-    conditionsFile = textread('kcl_rdk_skuyi_cueResponse.txt'); %#ok<*DTXTRD>
+    conditionsFile = textread('kcl_rdk_skuyi_cueResponse.txt'); %#ok<*DTXTRD> % even numbers
 else
-    conditionsFile = textread('kcl_rdk_skuyi_cueDirection.txt'); %#ok<*DTXTRD>
+    conditionsFile = textread('kcl_rdk_skuyi_cueDirection.txt'); %#ok<*DTXTRD> % odd numbers
 end
 
 blockNum            = conditionsFile(:,1); % block number (1-4), 1 = uncorrelated, 2 = correlated with no hints, 3 = correlated with hint, 4 = correlated with solution
@@ -186,28 +188,28 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
         %Screen(display.windowPtr,'DrawText','BLOCK 1' ,center(1),center(2) - 10,[255,255,255]);
         instructionimg = imread('kcl_rdk_Shuyi_PromptScreens_block1.jpg');
         texI = Screen('MakeTexture', display.windowPtr, instructionimg);
-        % rect = [50 -250 1600 1250];
+        rect = [50 -250 1600 1250];
         Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
         KbWait();
     elseif currBlock == 2 % display instructions for block 2
         instructionimg = imread('kcl_rdk_Shuyi_PromptScreens_block2.jpg');
         texI = Screen('MakeTexture', display.windowPtr, instructionimg);
-        % rect = [50 -250 1600 1250];
+        rect = [50 -250 1600 1250];
         Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
         KbWait();
     elseif currBlock == 3 % display instructions for block 3
         instructionimg = imread('kcl_rdk_Shuyi_PromptScreens_block3.jpg');
         texI = Screen('MakeTexture', display.windowPtr, instructionimg);
-        % rect = [50 -250 1600 1250];
+        rect = [50 -250 1600 1250];
         Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
         KbWait();
     else % display instructions for block 4
         instructionimg = imread('kcl_rdk_Shuyi_PromptScreens_block4.jpg');
         texI = Screen('MakeTexture', display.windowPtr, instructionimg);
-        % rect = [50 -250 1600 1250];
+        rect = [50 -250 1600 1250];
         Screen('DrawTexture', display.windowPtr, texI) %, rect);
         Screen('Flip',display.windowPtr);
         KbWait();
@@ -245,8 +247,8 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
 
         % break every "ntrialsBetweenBreaks" trials
         if  ttb > 1 && rem(ttb, ntrialsBetweenBreaks) == 1
-            Screen(display.windowPtr,'DrawText','Time for a break.', center(1)-150,center(2), [255,255,255]);
-            Screen(display.windowPtr,'DrawText','Press any key to continue.', center(1)-150, center(2)+100, [255,255,255]);
+            Screen(display.windowPtr,'DrawText',['Time for a break.'] ,center(1) -250,center(2),[255,255,255]);
+            Screen(display.windowPtr,'DrawText','Press any key to continue.' ,center(1) -100,center(2)+100,[255,255,255]);
             Screen('Flip',display.windowPtr);
             KbWait();
         end
@@ -318,11 +320,12 @@ for currBlock = startingBlock:total_number_of_blocks % allows for manually start
         respMat(totalTrialExperiment,13)  = RCat; % outcome category
         respMat(totalTrialExperiment,14) = RT; % response time
         respMat(totalTrialExperiment,15) = ITI(ttb); % intertrial interval
+        respMat(totalTrialExperiment,16) = task_version;
     end % trials/block
+    saveAfterCrash_Shuyi
 end % block
 % Save respMat output in logfile (add time and date to avoid overwriting)
-dlmwrite(['kcl_rdk_shuyi_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS AM'), '.txt'],respMat,'delimiter','\t') %#ok<*TNOW1,*DATST,*DLMWT>
-save(['kcl_rdk_shuyi_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS AM'), '.mat'],'respMat') %#ok<*DLMWT>
+dlmwrite(['kcl_rdk_shuyi_ppt_' , num2str(participantNumber), '_', datestr(now,'mmmm-dd-yyyy_HH-MM-SS-FFF AM'), '.txt'],respMat,'delimiter','\t') %#ok<*DLMWT>
 
 %% Finish slide at the end of the whole run
 instructionimg = imread('kcl_rdk_Shuyi_PromptScreens_practiceEnd.jpg');
@@ -334,22 +337,12 @@ KbWait();
 pause(0.1);
 
 Screen('CloseAll');
-ListenChar(1);
+ListenChar(0);
 
 return
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% IF SOMETHING GOES WRONG
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% To manually save the data, highlight the following text and right-click -> "evaluate current selection in command window"
+%saveAfterCrash_Shuyi;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% To manually save the data, highlight the following text and right-click -> "evaluate current selection in command window"
-saveAfterCrash_Daria; %#ok<*UNRCH>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% If you can't use the keyboard (it appears "locked"), highlight the following text, right-click -> "evaluate current selection in command window"
-ListenChar(1);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% If you can't use the keyboard (it appears "locked"), highlight the following text, right-click -> "evaluate current selection in command window"
+%ListenChar(0)
