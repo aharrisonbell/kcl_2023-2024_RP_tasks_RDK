@@ -141,6 +141,7 @@ errorbar([0.05, 0.10, 0.20, 0.30, 0.40, 0.50], mean(summaryData(summaryData(:,3)
 errorbar([0.05, 0.10, 0.20, 0.30, 0.40, 0.50], mean(summaryData(summaryData(:,3)==4, [9, 11, 13, 15, 17, 19])), ...
     sem(summaryData(summaryData(:,3)==4, [9, 11, 13, 15, 17, 19])), 'ms-'); % block 4
 title({'Performance as a function of BLOCK and Coherence Level','(mean +/- sem)'}, 'FontSize', 14)
+legend('Block 1','Block 2','Block 3','Block 4')
 xlabel('Difficulty (% Coherence)', 'FontSize', 12)
 ylabel('Performance (% Correct)', 'FontSize', 12)
 
@@ -157,3 +158,4 @@ errorbar([0.05, 0.10, 0.20, 0.30, 0.40, 0.50], mean(summaryData(summaryData(:,3)
 title({'Performance as a function of BLOCK and Coherence Level','(mean +/- sem) - Includes TimeOut Trials'}, 'FontSize', 14)
 xlabel('Difficulty (% Coherence)', 'FontSize', 12)
 ylabel('Performance (% Correct)', 'FontSize', 12)
+legend('Block 1','Block 2','Block 3','Block 4')
