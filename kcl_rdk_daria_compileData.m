@@ -99,6 +99,7 @@ individualParticipants = unique(rawData(:,1));
 
 %%
 summaryData = []; % initialise matrix
+close all
 for pp = 1:length(individualParticipants)
     temp_summaryData =nan(4, 20);
     disp(['Analysing participant ',num2str(individualParticipants(pp)),'...'])
@@ -127,6 +128,51 @@ for pp = 1:length(individualParticipants)
 
     summaryData = [summaryData; temp_summaryData];
     clear temp_summaryData
+
+    %% Figure Plot Step Function data
+
+    figure
+    subplot(2, 1, 1)
+    numTimePoints = size(tempData, 1);
+    trash_data = [];
+    binsize = 5;
+    trialsCounter = 1:binsize:numTimePoints;
+    for tp = 1:length(trialsCounter)-1
+         temp_trial_vector_data(1) = length(find(tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,13)==1)); % correct trials
+         temp_trial_vector_data(2) = length(find(tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,13)==2)); % incorrect trials
+         temp_trial_vector_data(3) = length(find(tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,13)==3)); % timed out trials
+         trash_data(tp) = temp_trial_vector_data(1) / sum(temp_trial_vector_data(1:3)) * 100;
+    end
+    
+    plot(trialsCounter(1:end-1), trash_data, 'ks-')
+    xlabel('Trial Number'); ylabel({'Average Performance (% Correct)', '(in floating 5 trial bins)'})
+    title(['Participant ', num2str(tempData(1,1))])
+    subplot(2, 1, 2)
+    hold on
+    linestyle = {'ks-', 'rs-', 'bs-', 'cs-', 'ms-', 'gs-'};
+    binsize = 10;
+    for dd = 1:6
+        numTimePoints = size(tempData(tempData(:, 8) == dd, 1));
+        trash_data = [];
+        
+        trialsCounter = 1:binsize:numTimePoints;
+        for tp = 1:length(trialsCounter)-1
+            temp_trial_vector_data(1) = length(find(tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,13)==1 & ...
+                tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,8)==dd)); % correct trials
+            temp_trial_vector_data(2) = length(find(tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,13)==2 & ...
+                tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,8)==dd)); % incorrect trials
+            temp_trial_vector_data(3) = length(find(tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,13)==3 & ...
+                tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,8)==dd)); % timed out trials
+            trash_data(tp) = temp_trial_vector_data(1) / sum(temp_trial_vector_data(1:3)) * 100; %#ok<*SAGROW>
+        end
+        plot(trialsCounter(1:end-1), trash_data, linestyle{dd})
+    end
+
+
+
+
+
+
 
 end
 summaryData(1:4,3:end)
