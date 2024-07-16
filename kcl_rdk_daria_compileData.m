@@ -13,7 +13,7 @@ responseCutoff = 1; % change all trials with RTs > 1 second to TIMED OUT
 if ispc % if this program is run on a windows PC
     rootdir='C:\Users\K...\OneDrive - King''s College London\MATLAB';
 else % if this program is run on a macbook
-    rootdir='~/OneDrive - King''s College London/MATLAB/currentProjects/proj_kcl_RDK_task/daria_data/';
+    rootdir='~/OneDrive - King''s College London/MATLAB/kcl_MATLAB_Projects/proj_kcl_RDK_task/daria_data/';
 end
 
 %% find datafiles
@@ -135,7 +135,7 @@ for pp = 1:length(individualParticipants)
     subplot(2, 1, 1)
     numTimePoints = size(tempData, 1);
     trash_data = [];
-    binsize = 5;
+    binsize = 10;
     trialsCounter = 1:binsize:numTimePoints;
     for tp = 1:length(trialsCounter)-1
          temp_trial_vector_data(1) = length(find(tempData(trialsCounter(tp):trialsCounter(tp)+binsize-1,13)==1)); % correct trials
@@ -145,6 +145,13 @@ for pp = 1:length(individualParticipants)
     end
     
     plot(trialsCounter(1:end-1), trash_data, 'ks-')
+
+   tmp_smoothData=mySmooth(trash_data',5,1,'backward');
+   hold on
+   plot(tmp_smoothData)
+   plot(heaviside_custom(tmp_smoothData))
+
+
     xlabel('Trial Number'); ylabel({'Average Performance (% Correct)', '(in floating 5 trial bins)'})
     title(['Participant ', num2str(tempData(1,1))])
     subplot(2, 1, 2)
@@ -166,6 +173,10 @@ for pp = 1:length(individualParticipants)
             trash_data(tp) = temp_trial_vector_data(1) / sum(temp_trial_vector_data(1:3)) * 100; %#ok<*SAGROW>
         end
         plot(trialsCounter(1:end-1), trash_data, linestyle{dd})
+        figure
+        heaviside_custom(trialsCounter(1:end-1), trash_data)
+
+        
     end
 
 
